@@ -16,7 +16,7 @@ const config = defineConfig({
   reporter: 'html',
 
   use: {
-    browserName: 'firefox',
+    browserName: 'chromium',
     headless : false
   },
 });

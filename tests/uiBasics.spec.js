@@ -79,7 +79,7 @@ test('UI Controls', async ({page})=>{
 });
 
 
-test.only('@Child window handle', async ({browser})=>{
+test('@Child window handle', async ({browser})=>{
     const context = await browser.newContext();
     const page = await context.newPage();
 
@@ -111,7 +111,6 @@ test.only('@Child window handle', async ({browser})=>{
 test('test', async ({ page }) => {
   await page.goto('https://www.google.com/');
   await page.getByRole('combobox', { name: 'Search' }).click();
-  await page.getByText('prayagraj mahakumbh satellite').click();
 });
  
 

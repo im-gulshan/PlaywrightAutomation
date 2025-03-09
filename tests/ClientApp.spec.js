@@ -59,8 +59,6 @@ test('@Web Client App Login', async ({page})=>{
     }
     await page.pause();
 
-    console.log("HiGulshan");
-
 
     // await placeOrder.click();
 

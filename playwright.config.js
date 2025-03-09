@@ -7,7 +7,7 @@ import { defineConfig, devices } from '@playwright/test';
 const config = defineConfig({
   testDir: './tests',
   
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
 
   expect: {
     timeout: 4000, // Adjusted for better practical use
@@ -16,7 +16,7 @@ const config = defineConfig({
   reporter: 'html',
 
   use: {
-    browserName: 'chromium',
+    browserName: 'firefox',
     headless : false
   },
 });

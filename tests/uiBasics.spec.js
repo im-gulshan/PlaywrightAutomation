@@ -79,13 +79,14 @@ test('UI Controls', async ({page})=>{
 });
 
 
-test.only('@Child window handle', async ({browser})=>{
+test('@Child window handle', async ({browser})=>{
     const context = await browser.newContext();
     const page = await context.newPage();
 
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
 
     const documentLink = page.locator("[href*='documents-request']");
+    
 
     const[newPage] = await Promise.all([
         context.waitForEvent("page"), // we write this before new event happens
@@ -97,10 +98,19 @@ test.only('@Child window handle', async ({browser})=>{
     const domain = arrayText[1].split(" ")[0];
     console.log(domain);
 
-    
+    const userName = page.locator("//input[@name='username']");
+
+    await userName.fill(domain);
+    console.log(await userName.inputValue());
     
 
 
 });
 
+// below test is recored script---
+test('test', async ({ page }) => {
+  await page.goto('https://www.google.com/');
+  await page.getByRole('combobox', { name: 'Search' }).click();
+});
+ 
 

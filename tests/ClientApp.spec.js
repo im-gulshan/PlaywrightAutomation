@@ -2,10 +2,11 @@ const {test, expect} = require('@playwright/test');
 const { text } = require('stream/consumers');
 
 // first Test
-test('@Web Client App Login', async ({page})=>{
+test('@Gen Client App Login', async ({page})=>{
 
     await page.goto("https://rahulshettyacademy.com/client/");
     const prodName = "ZARA COAT 3";
+    const email = "gulshan@iomail.com";
 
     const userName = page.locator("#userEmail");
     const pwd = page.locator("#userPassword");
@@ -26,7 +27,7 @@ test('@Web Client App Login', async ({page})=>{
 
 
 
-    await userName.fill("gulshan@iomail.com");
+    await userName.fill(email);
     await pwd.fill("Test@12345");
     await login.click();
 
@@ -57,14 +58,30 @@ test('@Web Client App Login', async ({page})=>{
             break;
         }
     }
-    await page.pause();
+    // await page.pause();
+
+    // await page.waitForTimeout(2000);
+    await expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
+    await page.locator(".action__submit").click();
+    await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
+    const orderID = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+    console.log(orderID);
+
+    // click on orders and search the placed order id
+
+    const partOfOrderId = orderID.split('|');
+
+    console.log("Parts "+partOfOrderId);
+    const extractedID = partOfOrderId[1].trim();
+
+    console.log("extractedID "+extractedID);
+
+    await page.locator("//button[contains(@routerlink, 'orders')]").click();
+    await page.locator("//tbody/tr/th[text()='"+extractedID+"']//following-sibling::td/button[text()='View']").click();
+    const orderSummaryOrderId = await page.locator("//div[@class='col-text -main']").textContent();
+
+    console.log("OrderSummar Order Id : "+orderSummaryOrderId);
 
 
-    // await placeOrder.click();
 
-
-
-
-    // const allTitles = await allProductTitles.allTextContents();
-    // console.log(allTitles);
 }); 

@@ -19,7 +19,7 @@ const config = defineConfig({
     browserName: 'chromium',
     headless : false,
     screenshot : 'on',
-    trace : 'retain-on-failure' // currently it will generate traces only on failure, we can change it to off also
+    trace : 'on', // currently it will generate traces only on failure, we can change it to off also
   },
 });
 

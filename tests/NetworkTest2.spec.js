@@ -16,9 +16,6 @@ test('Security test request intercept', async ({ page }) => {
     await login.click();
 
     await orders.click();
-    
-
-
 
     await page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=*",
         route => route.continue({ url: "https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=621661f884b053f6765465b6" })

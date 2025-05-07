@@ -1,18 +1,9 @@
 const {test, expect} = require('@playwright/test');
+const path = require('path');
 
 test("Popup Validation", async ({page}) => {
 
     await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
-    // await page.goto("https://www.google.com/");
-    // await page.goBack();
-    // await page.waitForTimeout(1000);
-    // await page.goForward();
-
-    // await expect(page.locator("//input[@id='displayed-text']")).toBeVisible();
-    // await page.locator("//input[@id='hide-textbox']").click();
-    // await expect(page.locator("//input[@id='displayed-text']")).toBeHidden();
-
-
     // handle webPopups --> accepts or Reject
     await page.locator("#name").fill("Gulshan");
     await page.locator("//input[@id='confirmbtn']").click();
@@ -28,13 +19,22 @@ test("Popup Validation", async ({page}) => {
     const textCheck = await framesPage.locator("//div[@class='text']/h2").textContent();
     console.log(textCheck);
     console.log(textCheck.split(" ")[1]);
-    
-    
-
-
-
-
-
 
     await page.waitForTimeout(4000);
 });
+
+test("Screenshot & Visuals comparision", async ({page}) => {
+    await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+    // handle webPopups --> accepts or Reject
+    await expect(page.locator("#displayed-text")).toBeVisible();
+    await page.locator("#displayed-text").screenshot({path: 'partialScreenshot.png'});
+    await page.locator("#hide-textbox").click();
+    await page.screenshot({path: 'screenshot.png'});
+    await expect(page.locator("#displayed-text")).toBeHidden();
+
+})
+
+test.only('Visuals', async ({page}) => {
+    await page.goto("https://www.google.com/");
+    expect(await page.screenshot()).toMatchSnapshot('landing.png');
+})

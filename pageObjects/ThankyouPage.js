@@ -1,0 +1,26 @@
+class ThankyouPage {
+
+    constructor(page) {
+        this.orderConfirmationMessageLocator = page.locator(".hero-primary");
+        this.orderIdLocator = page.locator(".em-spacer-1 .ng-star-inserted");
+    }
+
+    async getOrderConfirmationMessage() {
+        const orderSuccessMsg = await this.orderConfirmationMessageLocator.textContent();
+        return orderSuccessMsg.trim();
+    }
+
+    async getOrderId() {
+        const orderID = await this.orderIdLocator.textContent();
+        console.log(orderID);
+        const partOfOrderId = orderID.split('|');
+        console.log("Parts " + partOfOrderId);
+        let extractedID = partOfOrderId[1].trim();
+        console.log("extractedID " + extractedID);
+        return extractedID;
+    }
+
+
+
+}
+module.exports = { ThankyouPage };

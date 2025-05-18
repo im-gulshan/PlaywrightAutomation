@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { ApiUtils } = require('./utils/ApiUtils')
+const { ApiUtils } = require('../utils/ApiUtils')
 
 
 test('Security test request intercept', async ({ page }) => {

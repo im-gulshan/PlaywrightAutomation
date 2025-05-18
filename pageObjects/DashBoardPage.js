@@ -31,7 +31,7 @@ class DashBoardPage {
     }
 
     async checkoutCart(){
-        this.checkout.click();
+        await this.checkout.click();
     }
 
 

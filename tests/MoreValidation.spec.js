@@ -1,6 +1,8 @@
 const {test, expect} = require('@playwright/test');
 const path = require('path');
 
+test.describe.configure({mode: 'parallel'});
+
 test("Popup Validation", async ({page}) => {
 
     await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
@@ -23,7 +25,7 @@ test("Popup Validation", async ({page}) => {
     await page.waitForTimeout(4000);
 });
 
-test("Screenshot & Visuals comparision", async ({page}) => {
+test(`@Web Screenshot & Visuals comparision`, async ({page}) => {
     await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
     // handle webPopups --> accepts or Reject
     await expect(page.locator("#displayed-text")).toBeVisible();
@@ -34,7 +36,7 @@ test("Screenshot & Visuals comparision", async ({page}) => {
 
 })
 
-test.only('Visuals', async ({page}) => {
+test('Visuals', async ({page}) => {
     await page.goto("https://www.google.com/");
     expect(await page.screenshot()).toMatchSnapshot('landing.png');
 })

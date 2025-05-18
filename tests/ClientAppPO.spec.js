@@ -1,58 +1,77 @@
 const { test, expect } = require('@playwright/test');
-const { LoginPage } = require('../pageObjects/LoginPage');
-const { DashBoardPage } = require('../pageObjects/DashBoardPage');
-const { PaymentPage } = require('../pageObjects/PaymentPage');
-const { ThankyouPage } = require('../pageObjects/ThankyouPage');
-const { HeaderPage } = require('../pageObjects/HeaderPage');
-const { OrdersPage } = require('../pageObjects/OrdersPage');
-const { OrderSummary } = require('../pageObjects/OrderSummary');
+const { POManager } = require('../pageObjects/POManager');
+const { customTest } = require('../utils/test-base');
 
-test('@Gen Client App Login', async ({ page }) => {
-    // Test data
-    const prodName = "ZARA COAT 3";
-    const email = "gulshan@iomail.com";
-    const password = "Test@12345";
+// calling data from json file, its like data driven testing
+const data = JSON.parse(JSON.stringify(require("../utils/placeOrderTestData.json")));
+
+
+for (let dataSet of data) {
+
+    test(`@Web Client App Login For ${dataSet.prodName}`, async ({ page }) => {
+        const poManager = new POManager(page);
+
+        // Login to the application
+        const loginPage = poManager.getLoginPage();
+        loginPage.goto();
+        loginPage.validLogin(dataSet.username, dataSet.password);
+
+        // Create DashBoardPage object and add product to the cart
+        const dashBoardPage = poManager.getdashBoardPage();
+        await dashBoardPage.addProductToCart(dataSet.prodName);
+
+        // Verify product is in the cart and proceed to checkout
+        const isProductInCart = dashBoardPage.checkCartsPrducts(dataSet.prodName);
+        expect(isProductInCart).toBeTruthy();
+        await dashBoardPage.checkoutCart();
+
+        // Create PaymentPage object and complete payment
+        const paymentPage = poManager.getpaymentPage();
+        paymentPage.selectCountryFromDropdown("India");
+        expect(paymentPage.verifyUserEmail(dataSet.username));
+        paymentPage.placeOrder();
+
+        // Create ThankyouPage object and verify order confirmation
+        const thankyouPage = poManager.getthankyouPage();
+        const confirmationMessage = await thankyouPage.getOrderConfirmationMessage();
+        expect(confirmationMessage).toBe("Thankyou for the order.");
+
+        // Retrieve the order ID
+        const extractedID = await thankyouPage.getOrderId();
+
+        // Create HeaderPage object and navigate to orders
+        const headerPage = poManager.getheaderPage();
+        headerPage.openOrders();
+
+        // Create OrdersPage object and view the specific order
+        const orderPage = poManager.getorderPage();
+        orderPage.viewOrderById(extractedID);
+
+        // Create OrderSummary object and retrieve the order summary ID
+        const orderSummary = poManager.getorderSummary();
+        const orderSummaryOrderId = await orderSummary.getOrderSummaryOrderId();
+
+        // Log the order summary ID
+        console.log("Order Summary Order ID: " + orderSummaryOrderId);
+    });
+
+
+}
+
+customTest(`Client App Login Custom Test`, async ({ page, testDataForOrder }) => {
+    const poManager = new POManager(page);
 
     // Login to the application
-    const loginPage = new LoginPage(page);
+    const loginPage = poManager.getLoginPage();
     loginPage.goto();
-    loginPage.validLogin(email, password);
+    loginPage.validLogin(testDataForOrder.username, testDataForOrder.password);
 
     // Create DashBoardPage object and add product to the cart
-    const dashBoardPage = new DashBoardPage(page);
-    await dashBoardPage.addProductToCart(prodName);
+    const dashBoardPage = poManager.getdashBoardPage();
+    await dashBoardPage.addProductToCart(testDataForOrder.prodName);
 
     // Verify product is in the cart and proceed to checkout
-    const isProductInCart = dashBoardPage.checkCartsPrducts(prodName);
+    const isProductInCart = dashBoardPage.checkCartsPrducts(testDataForOrder.prodName);
     expect(isProductInCart).toBeTruthy();
     await dashBoardPage.checkoutCart();
-
-    // Create PaymentPage object and complete payment
-    const paymentPage = new PaymentPage(page);
-    paymentPage.selectCountryFromDropdown("India");
-    expect(paymentPage.verifyUserEmail(email));
-    paymentPage.placeOrder();
-
-    // Create ThankyouPage object and verify order confirmation
-    const thankyouPage = new ThankyouPage(page);
-    const confirmationMessage = await thankyouPage.getOrderConfirmationMessage();
-    expect(confirmationMessage).toBe("Thankyou for the order.");
-
-    // Retrieve the order ID
-    const extractedID = await thankyouPage.getOrderId();
-
-    // Create HeaderPage object and navigate to orders
-    const headerPage = new HeaderPage(page);
-    headerPage.openOrders();
-
-    // Create OrdersPage object and view the specific order
-    const orderPage = new OrdersPage(page);
-    orderPage.viewOrderById(extractedID);
-
-    // Create OrderSummary object and retrieve the order summary ID
-    const orderSummary = new OrderSummary(page);
-    const orderSummaryOrderId = await orderSummary.getOrderSummaryOrderId();
-
-    // Log the order summary ID
-    console.log("Order Summary Order ID: " + orderSummaryOrderId);
 });

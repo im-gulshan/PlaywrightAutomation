@@ -20,9 +20,10 @@ const config = defineConfig({
       name: 'Safari',
       use: {
         browserName: 'webkit',
-        headless: true,
+        headless: false,
         screenshot: 'off',
         trace: 'on', // currently it will generate traces only on failure, we can change it to off also
+        ...devices['iPhone 11']
       }
     },
     {

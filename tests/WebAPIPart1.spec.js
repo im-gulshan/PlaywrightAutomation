@@ -17,7 +17,7 @@ test.beforeAll  ( async ()=> {
 });
 
 
-test('@Gen Client App Login', async ({page})=>{
+test('@API Client App Login', async ({page})=>{
     const prodName = "ZARA COAT 3";
     const email = "gulshan@iomail.com";
 

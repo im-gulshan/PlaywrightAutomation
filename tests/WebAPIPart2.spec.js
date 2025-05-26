@@ -38,7 +38,7 @@ test.beforeAll(async ({browser}) => {
 
 
 // first Test
-test('@Gen Client App Login', async ()=>{
+test('@API Client App Login', async ()=>{
 
 
     const page = await webContext.newPage();
